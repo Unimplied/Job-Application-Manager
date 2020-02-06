@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -35,6 +36,7 @@ def clear_input():
     company_entry.delete(0, END)
     title_entry.delete(0, END)
     application_entry.delete(0, END)
+    search_entry.delete(0, END)
     application_status = ''
 
 def add_item():
@@ -71,6 +73,14 @@ def remove_selection():
     db.remove(selected_item[0])
     clear_input()
     populate_list()
+
+def search_list():
+    result = Database.search_list(db, search_list_job.get())
+    if result == 0:
+        messagebox.showerror('Job not in list', 'Job not in list')
+    else:
+        messagebox.showerror('Job in list', 'Job in list')
+    
     
 # Create window object
 app = Tk()
@@ -89,14 +99,24 @@ title_label.grid(row=1, column=0, sticky=W)
 title_entry = Entry(app, textvariable=title_name)
 title_entry.grid(row=1, column=1)
 
-# job application Date
+# Job application Date
 application_date = StringVar()
 application_date_label = Label(app, text='Application Date:', font=('bold', 14), pady=10, padx=20)
 application_date_label.grid(row=2, column=0, sticky=W)
 application_entry = Entry(app, textvariable=application_date)
 application_entry.grid(row=2, column=1)
 
+# Search list
+search_list_job = StringVar()
+search_list_label = Label(app, text='Search List:', font=('bold', 14), pady=10, padx=20)
+search_list_label.grid(row=11, column=0, sticky=W)
+search_entry = Entry(app, textvariable=search_list_job)
+search_entry.grid(row=11, column=1)
+
 # Status buttons
+ttk.search_button = Button(app, text='Search', width = 12, command = search_list)
+ttk.search_button.grid(row=11, column=2, pady=10)
+
 ttk.active_application_btn = Button(app, text='Active', width = 12, command=add_active)
 ttk.active_application_btn.grid(row=3, column=0, pady=10)
 
@@ -125,7 +145,6 @@ applications_list.grid(row=5, column=0, columnspan=3, rowspan=6, pady=20, padx=2
 
 # Create scrollbar and connect to listbox
 scrollbar=Scrollbar(app)
-#scrollbar.grid(row=5, column=2)
 applications_list.configure(yscrollcommand=scrollbar.set)
 scrollbar.configure(command=applications_list.yview)
 
@@ -156,11 +175,11 @@ def graph():
 
 # Create button to plot Histogram
 ttk.plot_chart = Button(app, text='Plot Chart', command=graph)
-ttk.plot_chart.grid(row=11, column=0)
+ttk.plot_chart.grid(row=12, column=0)
 
 # Application title and window size declaration
 app.title('Application Manager')
-app.geometry('800x450')
+app.geometry('800x500')
 
 # Populate data
 populate_list()

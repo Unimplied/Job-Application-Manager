@@ -24,6 +24,14 @@ class Database:
         self.cur.execute("UPDATE applications SET company_name = ?, title_name = ?, application_date = ?, application_status = ? WHERE id =?", (company_name, title_name, application_date, application_status, id))
         self.conn.commit()
         
+    def search_list(self, company_name):
+        self.cur.execute("SELECT * FROM applications WHERE company_name = ?", (company_name,))
+        search_result = self.cur.fetchone()[0]
+        self.conn.commit()
+        if search_result is None:
+            search_result = 0
+        return search_result
+        
     def count_total(self):
         self.cur.execute("SELECT COUNT() FROM applications")
         active = self.cur.fetchone()[0]
